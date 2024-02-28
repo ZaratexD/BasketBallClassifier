@@ -1,4 +1,4 @@
- 
+#first iteration of classifer
 import numpy as np
 import cv2
 import matplotlib
