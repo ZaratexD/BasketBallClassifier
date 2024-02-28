@@ -1,0 +1,4 @@
+{
+  "python.pythonPath": "/Users/angelzarate/miniconda3/envs/dataProject/bin/python",
+  "python.formatting.provider": "black"
+}
