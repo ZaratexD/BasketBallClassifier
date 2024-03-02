@@ -46,7 +46,6 @@ count = 0
 for celebrity_name in cropped_img_dirs.keys():
     class_dict[celebrity_name] = count
     count = count + 1
-class_dict
 
 x, y = [], []
 for celebrity_name, training_files in cropped_img_dirs.items():
@@ -63,3 +62,5 @@ for celebrity_name, training_files in cropped_img_dirs.items():
         )
         x.append(combined_img)
         y.append(class_dict[celebrity_name])
+
+x = np.array(x).reshape(len(x), 4096).astype(float)
