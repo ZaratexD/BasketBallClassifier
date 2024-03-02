@@ -20,14 +20,13 @@ def rename_google_scrape(raw_images):
             count = 0
             player_name = player.path.split("/")[-1:][0].split("-")[0].strip()
             new_dir = fixed_folder_path + "/" + player_name
-            # print(new_dir)
             if not os.path.exists(new_dir):
                 os.makedirs(new_dir)
             for images in os.scandir(player):
                 curr = images.path.split(".")[-1:][0]
                 if curr == "jpg" or curr == "png":
                     new_img_path = new_dir + "/" + player_name + str(count) + "." + curr
-                    print(new_img_path)
+
                     count = count + 1
                     cv2.imwrite(new_img_path, cv2.imread(images.path))
 
@@ -91,5 +90,3 @@ for img_dir in img_dirs:
                 cv2.imwrite(cropped_file_path, roi_color)
                 celebrity_file_names_dict[celebrity_name].append(cropped_file_path)
                 count += 1
-
-print(celebrity_file_names_dict)

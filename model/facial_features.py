@@ -8,6 +8,12 @@ cropped_img_path = "model/dataset/cropped"
 # key: name of player, value: paths to their cropped face
 cropped_img_dirs = {}
 
+for player in os.scandir(cropped_img_path):
+    player_name = player.path.split("/")[-1]
+    cropped_img_dirs[player_name] = []
+    for img in os.scandir(player.path):
+        cropped_img_dirs[player_name].append(img.path)
+
 
 # need to connect the /cropped images into here
 
