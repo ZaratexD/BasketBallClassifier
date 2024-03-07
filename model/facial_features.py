@@ -47,7 +47,8 @@ for celebrity_name in cropped_img_dirs.keys():
     class_dict[celebrity_name] = count
     count = count + 1
 
-x, y = [], []
+X, y = [], []
+
 for celebrity_name, training_files in cropped_img_dirs.items():
     for training_image in training_files:
         img = cv2.imread(training_image)
@@ -60,7 +61,74 @@ for celebrity_name, training_files in cropped_img_dirs.items():
                 scalled_img_har.reshape(32 * 32, 1),
             )
         )
-        x.append(combined_img)
+        X.append(combined_img)
         y.append(class_dict[celebrity_name])
 
-x = np.array(x).reshape(len(x), 4096).astype(float)
+X = np.array(X).reshape(len(X), 4096).astype(float)
+
+
+from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.metrics import classification_report
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+
+pipe = Pipeline([("scaler", StandardScaler()), ("svc", SVC(kernel="rbf", C=10))])
+pipe.fit(X_train, y_train)
+print(pipe.score(X_test, y_test))
+
+
+print(class_dict)
+print(classification_report(y_test, pipe.predict(X_test)))
+print(len(X_test))
+
+from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GridSearchCV
+
+model_params = {
+    "svm": {
+        "model": svm.SVC(gamma="auto", probability=True),
+        "params": {"svc__C": [1, 10, 100, 1000], "svc__kernel": ["rbf", "linear"]},
+    },
+    "random_forest": {
+        "model": RandomForestClassifier(),
+        "params": {"randomforestclassifier__n_estimators": [1, 5, 10]},
+    },
+    "logistic_regression": {
+        "model": LogisticRegression(solver="liblinear", multi_class="auto"),
+        "params": {"logisticregression__C": [1, 5, 10]},
+    },
+}
+
+scores = []
+best_estimators = {}
+import pandas as pd
+
+for algo, mp in model_params.items():
+    pipe = make_pipeline(StandardScaler(), mp["model"])  # what is sklearn pipeline
+    clf = GridSearchCV(pipe, mp["params"], cv=5, return_train_score=False)
+    clf.fit(X_train, y_train)
+    scores.append(
+        {"model": algo, "best_score": clf.best_score_, "best_params": clf.best_params_}
+    )
+    best_estimators[algo] = clf.best_estimator_
+
+df = pd.DataFrame(scores, columns=["model", "best_score", "best_params"])
+
+best_clf = best_estimators["svm"]
+
+import joblib
+
+# Save the model as a pickle in a file
+# TODO save this to server automatically
+joblib.dump(best_clf, "saved_model.pkl")
+
+import json
+
+with open("class_dictionary.json", "w") as f:
+    f.write(json.dumps(class_dict))
