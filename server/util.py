@@ -113,14 +113,3 @@ if __name__ == "__main__":
     for img in os.scandir("server/test_images"):
         if img.path.split(".")[-1] == "jpg" or img.path.split(".")[-1] == "png":
             print(classify_image(None, img.path))
-
-    # print(classify_image(get_b64_test_image_for_virat(), None))
-
-    # print(classify_image(None, "./test_images/federer1.jpg"))
-    # print(classify_image(None, "./test_images/federer2.jpg"))
-    # print(classify_image(None, "./test_images/virat1.jpg"))
-    # print(classify_image(None, "./test_images/virat2.jpg"))
-    # print(classify_image(None, "./test_images/virat3.jpg")) # Inconsistent result could be due to https://github.com/scikit-learn/scikit-learn/issues/13211
-    # print(classify_image(None, "./test_images/serena1.jpg"))
-    # print(classify_image(None, "./test_images/serena2.jpg"))
-    # print(classify_image(None, "./test_images/sharapova1.jpg"))
